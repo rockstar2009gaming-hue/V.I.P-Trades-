@@ -10,6 +10,7 @@ import os
 # =========================
 intents = discord.Intents.default()
 intents.members = True
+intents.message_content = True  # recommended
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
@@ -38,37 +39,29 @@ class MMView(discord.ui.View):
 # MM COMMAND
 # =========================
 @bot.tree.command(name="mminfo", description="Detailed middleman info")
-@app_commands.checks.has_role("Server Middleman")  # change role name if needed
+@app_commands.checks.has_role("Server Middleman")
 async def mminfo(interaction: discord.Interaction):
 
     embed = discord.Embed(
         title="💎 Middleman System Explained",
         description=(
-            "**A Middleman (MM)** is a trusted person who ensures safe trades between buyer and seller.\n\n"
+            "**A Middleman (MM)** is a trusted person who ensures safe trades.\n\n"
             "━━━━━━━━━━━━━━━━━━\n\n"
             "**🔄 How MM Works:**\n"
-            "1️⃣ Seller gives item to MM\n"
-            "2️⃣ Buyer sends payment to seller\n"
-            "3️⃣ MM verifies payment\n"
-            "4️⃣ MM gives item to buyer\n\n"
+            "1️⃣ Seller → MM\n"
+            "2️⃣ Buyer pays seller\n"
+            "3️⃣ MM verifies\n"
+            "4️⃣ MM gives item\n\n"
             "━━━━━━━━━━━━━━━━━━\n\n"
             "**🛡️ Why use MM?**\n"
-            "• Prevents scams\n"
-            "• Safe & secure trading\n"
-            "• Trusted process\n\n"
+            "• Prevent scams\n"
+            "• Safe trading\n\n"
             "━━━━━━━━━━━━━━━━━━\n\n"
-            "**⚠️ IMPORTANT RULES:**\n"
-            "• Only use official server MMs\n"
-            "• Do NOT trust random users\n"
-            "• Always confirm MM identity\n"
-            "• Screenshare if needed\n\n"
+            "**⚠️ RULES:**\n"
+            "• Only official MM\n"
+            "• Verify identity\n\n"
             "━━━━━━━━━━━━━━━━━━\n\n"
-            "**💰 Supported Trades:**\n"
-            "• Robux / Accounts\n"
-            "• Game items\n"
-            "• Real money deals\n\n"
-            "━━━━━━━━━━━━━━━━━━\n\n"
-            "Click below to confirm 👇"
+            "Click below 👇"
         ),
         color=discord.Color.purple()
     )
@@ -92,7 +85,6 @@ async def ping(interaction: discord.Interaction):
 @app_commands.checks.has_permissions(ban_members=True)
 @app_commands.describe(user="User to ban")
 async def ban(interaction: discord.Interaction, user: discord.Member):
-
     await user.ban()
     await interaction.response.send_message(f"{user} banned 🔨")
 
@@ -105,13 +97,6 @@ app = Flask('')
 def home():
     return "Bot is alive!"
 
-def run():
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 3000)))
-
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
-
 # =========================
 # START BOT + FLASK
 # =========================
@@ -121,7 +106,7 @@ def start_bot():
         print("TOKEN:", token)
 
         if not token:
-            print("❌ TOKEN IS NONE / NOT FOUND")
+            print("❌ TOKEN NOT FOUND")
             return
 
         bot.run(token)
@@ -130,8 +115,7 @@ def start_bot():
         print("❌ BOT ERROR:", e)
 
 # Run bot in background thread
-t = Thread(target=start_bot)
-t.start()
+Thread(target=start_bot).start()
 
-# Run Flask (main thread)
-app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 3000)))
+# Run Flask in main thread
+app.run(host='0.0.0.0', port=int(os.environ["PORT"]))
