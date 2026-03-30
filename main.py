@@ -115,10 +115,19 @@ def keep_alive():
 # =========================
 # START BOT + FLASK
 # =========================
-
 def start_bot():
-    print("TOKEN:", os.getenv("DISCORD_TOKEN"))
-    bot.run(os.getenv("DISCORD_TOKEN"))
+    try:
+        token = os.getenv("DISCORD_TOKEN")
+        print("TOKEN:", token)
+
+        if not token:
+            print("❌ TOKEN IS NONE / NOT FOUND")
+            return
+
+        bot.run(token)
+
+    except Exception as e:
+        print("❌ BOT ERROR:", e)
 
 # Run bot in background thread
 t = Thread(target=start_bot)
