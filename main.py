@@ -113,9 +113,16 @@ def keep_alive():
     t.start()
 
 # =========================
-# START BOT
+# START BOT + FLASK
 # =========================
 
-keep_alive()
-print("TOKEN:", os.getenv("DISCORD_TOKEN"))
-bot.run(os.getenv("DISCORD_TOKEN"))
+def start_bot():
+    print("TOKEN:", os.getenv("DISCORD_TOKEN"))
+    bot.run(os.getenv("DISCORD_TOKEN"))
+
+# Run bot in background thread
+t = Thread(target=start_bot)
+t.start()
+
+# Run Flask (main thread)
+app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 3000)))
